@@ -1,0 +1,39 @@
+-- ALU entity definition
+entity ALU_8bit is
+    Port (
+        A, B : in std_logic_vector(7 downto 0); -- 8-bit input operands
+        OP   : in std_logic_vector(1 downto 0); -- Operation select inputs
+        Result : out std_logic_vector(7 downto 0); -- 8-bit result output
+        Zero   : out std_logic -- Output indicating result is zero
+    );
+end ALU_8bit;
+
+-- ALU architecture
+architecture Behavioral of ALU_8bit is
+begin
+    -- Process for ALU operations based on OP select
+    process (A, B, OP)
+    begin
+        case OP is
+            when "00" => -- Addition operation
+                Result <= A + B;
+                Zero <= '0' when Result /= "00000000" else '1';
+            
+            when "01" => -- Subtraction operation (A - B)
+                Result <= A - B;
+                Zero <= '0' when Result /= "00000000" else '1';
+            
+            when "10" => -- NAND operation
+                Result <= not (A and B);
+                Zero <= '0' when Result /= "00000000" else '1';
+            
+            when "11" => -- XOR operation
+                Result <= A xor B;
+                Zero <= '0' when Result /= "00000000" else '1';
+                
+            when others =>
+                Result <= (others => '0');
+                Zero <= '0';
+        end case;
+    end process;
+end Behavioral;
